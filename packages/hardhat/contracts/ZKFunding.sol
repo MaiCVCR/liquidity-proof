@@ -6,11 +6,11 @@ import "hardhat/console.sol";
 // Interface to zk-SNARK verifier contract
 interface Groth16Verifier {
     function verifyProof(
-        uint[2] memory _pA, 
-        uint[2][2] memory _pB, 
-        uint[2] memory _pC, 
-        uint _pubSignals
-    ) external view returns (bool);
+        uint[2] calldata _pA, 
+        uint[2][2] calldata _pB, 
+        uint[2] calldata _pC, 
+        uint[1] calldata _pubSignals
+    ) external view returns (bool);    
 }
 
 contract ZKFundingContract {
@@ -68,16 +68,17 @@ contract ZKFundingContract {
     function verifyProof(
         address depositor,
         uint256 index,
-        uint[2] memory _pA,
-        uint[2][2] memory _pB,
-        uint[2] memory _pC
+        uint[2] calldata _pA,
+        uint[2][2] calldata _pB,
+        uint[2] calldata _pC,
+        uint[1] calldata _pubSignals
     ) external view returns (bool) {
         require(index < deposits[depositor].length, "Invalid deposit index");
 
         Deposit memory deposit = deposits[depositor][index];
 
         // Verify the zk-proof with the external zk-SNARK verifier, using deposit's public signal
-        bool valid = zkVerifier.verifyProof(_pA, _pB, _pC, deposit.pubSignal);
+        bool valid = zkVerifier.verifyProof(_pA, _pB, _pC, _pubSignals);
 
         require(valid, "Invalid zk-proof");
         return valid;
