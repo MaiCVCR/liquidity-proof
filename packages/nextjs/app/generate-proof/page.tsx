@@ -1,4 +1,4 @@
-"use client"; // This ensures the component is treated as a client component
+"use client"; // This ensures the component is treated as a client
 
 import React, { useState } from 'react';
 import { buildPoseidon } from 'circomlibjs';
