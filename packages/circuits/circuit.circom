@@ -7,6 +7,7 @@ template LiquidityDepositCheck() {
     signal input expectedDepositHash;    
     signal input userAddress;
     signal input depositAmount;
+    signal output valid;
 
     component hasher = Poseidon(2);
     hasher.inputs[0] <== userAddress;
@@ -15,7 +16,13 @@ template LiquidityDepositCheck() {
     signal hashedInput;
     hashedInput <== hasher.out;
 
+    signal difference;
+    difference <== expectedDepositHash - hashedInput;    
+
+    valid <== 1 - difference * difference;
+
     expectedDepositHash === hashedInput;
+
 }
 
 component main = LiquidityDepositCheck();
