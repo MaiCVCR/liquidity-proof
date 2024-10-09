@@ -13,15 +13,11 @@ export const GenerateProofForm = () => {
     const poseidon = await buildPoseidon();
     const F = poseidon.F;
 
-    // Convierte los inputs a BigInt
     const userAddressBigInt = BigInt(input.userAddress);
     const depositAmountBigInt = BigInt(input.depositAmount);
 
-    // Calcula el hash con Poseidon
     const hash = poseidon([userAddressBigInt, depositAmountBigInt]);
 
-    // Convierte el hash a un formato legible y lo almacena
-    console.log(F.toString(hash));
     return F.toString(hash);
   };
 
@@ -34,18 +30,17 @@ export const GenerateProofForm = () => {
         expectedDepositHash: calculatedHash,
       };
 
-      // Rutas a los archivos .wasm y .zkey (deberás asegurarte de que estén en la carpeta public o accesibles)
       const wasmFile = "/circuit/circuit.wasm";
       const zkeyFile = "/circuit/circuit_final.zkey";
 
-      // Inputs para el circuito
+      // Inputs for the circuit
       const inputs = {
         userAddress: updatedInput.userAddress,
         depositAmount: updatedInput.depositAmount,
         expectedDepositHash: updatedInput.expectedDepositHash,
       };
 
-      // Generación de la prueba en el frontend
+      //proof generation
       const { proof, publicSignals } = await snarkjs.groth16.fullProve(inputs, wasmFile, zkeyFile);
 
       console.log("Proof:", proof);
