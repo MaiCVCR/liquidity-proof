@@ -5,6 +5,8 @@ import { buildPoseidon } from 'circomlibjs';
 import * as snarkjs from 'snarkjs';
 import { useRouter } from 'next/navigation';
 
+//random comment
+
 const GenerateProofForm: React.FC = () => {
   const [input, setInput] = useState({
     userAddress: '',
