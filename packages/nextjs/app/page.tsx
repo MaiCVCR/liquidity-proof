@@ -9,7 +9,6 @@ const Home: NextPage = () => {
 
   return (
     <div>
-      <h1>Generate Proof Page</h1>
       <GenerateProofForm />
     </div>
   );
