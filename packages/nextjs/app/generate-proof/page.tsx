@@ -1,23 +1,24 @@
-"use client"; // This ensures the component is treated as a client
+"use client";
 
-import React, { useState } from 'react';
-import { buildPoseidon } from 'circomlibjs';
-import * as snarkjs from 'snarkjs';
-import { useRouter } from 'next/navigation';
+// This ensures the component is treated as a client
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { buildPoseidon } from "circomlibjs";
+import * as snarkjs from "snarkjs";
 
 //random comment
 
 const GenerateProofForm: React.FC = () => {
   const [input, setInput] = useState({
-    userAddress: '',
-    depositAmount: '',
-    expectedDepositHash: '',
+    userAddress: "",
+    depositAmount: "",
+    expectedDepositHash: "",
   });
 
   const router = useRouter();
 
   const handleProveClick = () => {
-    router.push('/zkFund'); // Navigate to the zkFund page
+    router.push("/zkFund"); // Navigate to the zkFund page
   };
 
   const calculatePoseidonHash = async () => {
@@ -41,8 +42,8 @@ const GenerateProofForm: React.FC = () => {
         expectedDepositHash: calculatedHash,
       };
 
-      const wasmFile = '/circuit/circuit.wasm';
-      const zkeyFile = '/circuit/circuit_final.zkey';
+      const wasmFile = "/circuit/circuit.wasm";
+      const zkeyFile = "/circuit/circuit_final.zkey";
 
       const inputs = {
         userAddress: updatedInput.userAddress,
@@ -50,25 +51,30 @@ const GenerateProofForm: React.FC = () => {
         expectedDepositHash: updatedInput.expectedDepositHash,
       };
 
-      const { proof, publicSignals } = await snarkjs.groth16.fullProve(
-        inputs,
-        wasmFile,
-        zkeyFile
-      );
+      const { proof, publicSignals } = await snarkjs.groth16.fullProve(inputs, wasmFile, zkeyFile);
 
-      console.log('Proof:', proof);
-      console.log('Public Signals:', publicSignals);
+      const response = await fetch("/circuit/verification_key.json");
+      const vKey = await response.json();
+
+      const isValid = await snarkjs.groth16.verify(vKey, publicSignals, proof);
+
+      if (isValid) {
+        alert("Proof verified successfully!");
+      } else {
+        alert("Proof verification failed.");
+      }
+
+      console.log("Proof:", proof);
+      console.log("Public Signals:", publicSignals);
     } catch (error) {
-      console.error('Error generating proof:', error);
+      console.error("Error generating proof:", error);
     }
   };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-base-200">
       <div className="max-w-md w-full p-6 bg-base-100 shadow-xl rounded-lg">
-        <h2 className="text-2xl font-bold mb-4 text-center">
-          Generate Liquidity Deposit Proof
-        </h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">Generate Liquidity Deposit Proof</h2>
 
         <div className="mb-4">
           <input
@@ -76,9 +82,7 @@ const GenerateProofForm: React.FC = () => {
             placeholder="User Address"
             className="input input-bordered w-full"
             value={input.userAddress}
-            onChange={(e) =>
-              setInput({ ...input, userAddress: e.target.value })
-            }
+            onChange={e => setInput({ ...input, userAddress: e.target.value })}
           />
         </div>
 
@@ -88,9 +92,7 @@ const GenerateProofForm: React.FC = () => {
             placeholder="Deposit Amount"
             className="input input-bordered w-full"
             value={input.depositAmount}
-            onChange={(e) =>
-              setInput({ ...input, depositAmount: e.target.value })
-            }
+            onChange={e => setInput({ ...input, depositAmount: e.target.value })}
           />
         </div>
 
