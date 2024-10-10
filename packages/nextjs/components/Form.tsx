@@ -43,8 +43,16 @@ export const GenerateProofForm = () => {
       //proof generation
       const { proof, publicSignals } = await snarkjs.groth16.fullProve(inputs, wasmFile, zkeyFile);
 
-      console.log("Proof:", proof);
-      console.log("Public Signals:", publicSignals);
+      const response = await fetch("/circuit/verification_key.json");
+      const vKey = await response.json();
+
+      const isValid = await snarkjs.groth16.verify(vKey, publicSignals, proof);
+
+      if (isValid) {
+        alert("Proof verified successfully!");
+      } else {
+        alert("Proof verification failed.");
+      }
     } catch (error) {
       console.error("Error generating proof:", error);
     }
