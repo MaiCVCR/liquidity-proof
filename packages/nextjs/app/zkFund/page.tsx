@@ -1,13 +1,22 @@
-"use client"; // This ensures the component is treated as a client
+"use client";
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
+// This ensures the component is treated as a client
+import React from "react";
+import { useRouter } from "next/navigation";
 
 const ZkFundComponent: React.FC = () => {
   const router = useRouter();
 
   const handleProveClick = () => {
-    router.push('/generate-proof'); // Navigate to the Generate Proof page
+    router.push("/generate-proof"); // Navigate to the Generate Proof page
+  };
+
+  const handleDepositClick = () => {
+    router.push("/deposit"); // Navigate to the Generate Proof page
+  };
+
+  const handleWithdrawClick = () => {
+    router.push("/withdrawal"); // Navigate to the Generate Proof page
   };
 
   return (
@@ -20,8 +29,12 @@ const ZkFundComponent: React.FC = () => {
         </div>
 
         <div className="flex justify-center gap-4">
-          <button className="btn btn-primary">Deposit</button>
-          <button className="btn btn-secondary">Withdraw</button>
+          <button className="btn btn-primary" onClick={handleDepositClick}>
+            Deposit
+          </button>
+          <button className="btn btn-secondary" onClick={handleWithdrawClick}>
+            Withdraw
+          </button>
           <button className="btn btn-accent" onClick={handleProveClick}>
             Prove
           </button>
