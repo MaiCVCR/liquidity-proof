@@ -1,13 +1,13 @@
-import React, { useState, useRef } from 'react';
-import { GenerateProofForm } from './Form';
+import React, { useRef, useState } from "react";
+import { GenerateProofForm } from "./Form";
 
 export const ZkFundComponent: React.FC = () => {
-  const [currentDepositValue, setCurrentDepositValue] = useState<number>(0);
+  const [currentDepositValue] = useState<number>(0);
   const proofFormRef = useRef<HTMLDivElement>(null);
 
   const scrollToForm = () => {
     if (proofFormRef.current) {
-      proofFormRef.current.scrollIntoView({ behavior: 'smooth' });
+      proofFormRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -25,7 +25,10 @@ export const ZkFundComponent: React.FC = () => {
           <div className="flex justify-center gap-4">
             <button className="btn btn-primary">Deposit</button>
             <button className="btn btn-secondary">Withdraw</button>
-            <button className="btn btn-accent" onClick={scrollToForm}>Prove</button> {/* Scrolls to form */}
+            <button className="btn btn-accent" onClick={scrollToForm}>
+              Prove
+            </button>{" "}
+            {/* Scrolls to form */}
           </div>
         </div>
       </div>

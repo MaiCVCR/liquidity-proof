@@ -38,7 +38,8 @@
     "@types/circomlibjs": "^0",
     "@types/snarkjs": "^0",
     "husky": "~8.0.3",
-    "lint-staged": "~13.2.2"
+    "lint-staged": "~13.2.2",
+    "prettier": "^3.3.3"
   },
   "packageManager": "yarn@3.2.3",
   "engines": {
