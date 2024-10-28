@@ -1,14 +1,18 @@
 "use client";
 
 // This ensures the component is treated as a client
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { buildPoseidon } from "circomlibjs";
+import { ethers } from "ethers";
 import * as snarkjs from "snarkjs";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 
 //random comment
 
 const GenerateProofForm: React.FC = () => {
+  const { data: deployedContractData } = useDeployedContractInfo("ZKFundingContract");
+  const [zkFundingContract, setZKFundingContract] = useState<ethers.Contract | null>(null);
   const [input, setInput] = useState({
     userAddress: "",
     depositAmount: "",
@@ -16,6 +20,19 @@ const GenerateProofForm: React.FC = () => {
   });
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (deployedContractData) {
+      // Initialize the contract instance with ethers.js
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      // Set up the contract instance with the signer to interact with it
+      const contract = new ethers.Contract(deployedContractData.address, deployedContractData.abi, signer);
+
+      setZKFundingContract(contract);
+    }
+  }, [deployedContractData]);
 
   const handleProveClick = () => {
     router.push("/zkFund"); // Navigate to the zkFund page
@@ -59,13 +76,34 @@ const GenerateProofForm: React.FC = () => {
       const isValid = await snarkjs.groth16.verify(vKey, publicSignals, proof);
 
       if (isValid) {
-        alert("Proof verified successfully!");
+        // Call the verifyProof method in the contract
+        if (zkFundingContract) {
+          const proofInputs = {
+            _pA: [proof.pi_a[0], proof.pi_a[1]],
+            _pB: [
+              [proof.pi_b[0][1], proof.pi_b[0][0]],
+              [proof.pi_b[1][1], proof.pi_b[1][0]],
+            ],
+            _pC: [proof.pi_c[0], proof.pi_c[1]],
+            _pubSignals: [publicSignals[0]],
+          };
+
+          const isValidOnChain = await zkFundingContract.verifyProof(
+            proofInputs._pA,
+            proofInputs._pB,
+            proofInputs._pC,
+            proofInputs._pubSignals,
+          );
+
+          if (isValidOnChain) {
+            alert("Proof verified on-chain!");
+          } else {
+            alert("On-chain verification failed.");
+          }
+        }
       } else {
         alert("Proof verification failed.");
       }
-
-      console.log("Proof:", proof);
-      console.log("Public Signals:", publicSignals);
     } catch (error) {
       console.error("Error generating proof:", error);
     }
