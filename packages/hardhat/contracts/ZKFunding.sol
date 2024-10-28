@@ -66,16 +66,11 @@ contract ZKFundingContract {
 
     // Function to verify zk-proof for a given deposit
     function verifyProof(
-        address depositor,
-        uint256 index,
         uint[2] calldata _pA,
         uint[2][2] calldata _pB,
         uint[2] calldata _pC,
         uint[1] calldata _pubSignals
-    ) external view returns (bool) {
-        require(index < deposits[depositor].length, "Invalid deposit index");
-
-        Deposit memory deposit = deposits[depositor][index];
+    ) public view returns (bool) {
 
         // Verify the zk-proof with the external zk-SNARK verifier, using deposit's public signal
         bool valid = zkVerifier.verifyProof(_pA, _pB, _pC, _pubSignals);

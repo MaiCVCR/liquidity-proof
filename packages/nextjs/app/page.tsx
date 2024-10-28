@@ -1,12 +1,12 @@
-"use client"; // This ensures the component is treated as a client component
+"use client";
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 const Home = () => {
   const router = useRouter();
 
   const handleZkFundClick = () => {
-    router.push('/zkFund');
+    router.push("/zkFund");
   };
 
   return (

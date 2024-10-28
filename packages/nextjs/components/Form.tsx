@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { buildPoseidon } from 'circomlibjs';
-import * as snarkjs from 'snarkjs';
+import { useState } from "react";
+import { buildPoseidon } from "circomlibjs";
+import * as snarkjs from "snarkjs";
 
 export const GenerateProofForm: React.FC = () => {
   const [input, setInput] = useState({
-    userAddress: '',
-    depositAmount: '',
-    expectedDepositHash: '',
+    userAddress: "",
+    depositAmount: "",
+    expectedDepositHash: "",
   });
 
   const calculatePoseidonHash = async () => {
@@ -30,8 +30,8 @@ export const GenerateProofForm: React.FC = () => {
         expectedDepositHash: calculatedHash,
       };
 
-      const wasmFile = '/circuit/circuit.wasm';
-      const zkeyFile = '/circuit/circuit_final.zkey';
+      const wasmFile = "/circuit/circuit.wasm";
+      const zkeyFile = "/circuit/circuit_final.zkey";
 
       // Inputs for the circuit
       const inputs = {
@@ -43,10 +43,10 @@ export const GenerateProofForm: React.FC = () => {
       // Proof generation
       const { proof, publicSignals } = await snarkjs.groth16.fullProve(inputs, wasmFile, zkeyFile);
 
-      console.log('Proof:', proof);
-      console.log('Public Signals:', publicSignals);
+      console.log("Proof:", proof);
+      console.log("Public Signals:", publicSignals);
     } catch (error) {
-      console.error('Error generating proof:', error);
+      console.error("Error generating proof:", error);
     }
   };
 
@@ -61,7 +61,7 @@ export const GenerateProofForm: React.FC = () => {
             placeholder="User Address"
             className="input input-bordered w-full"
             value={input.userAddress}
-            onChange={(e) => setInput({ ...input, userAddress: e.target.value })}
+            onChange={e => setInput({ ...input, userAddress: e.target.value })}
           />
         </div>
 
@@ -71,7 +71,7 @@ export const GenerateProofForm: React.FC = () => {
             placeholder="Deposit Amount"
             className="input input-bordered w-full"
             value={input.depositAmount}
-            onChange={(e) => setInput({ ...input, depositAmount: e.target.value })}
+            onChange={e => setInput({ ...input, depositAmount: e.target.value })}
           />
         </div>
 
